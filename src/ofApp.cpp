@@ -16,8 +16,6 @@ void ofApp::setup(){
     industrialRobot->gotoResetPosition();
     idlePosition = ofVec3f(1460, 1560, 0);
     
-
-    
 }
 
 //--------------------------------------------------------------
@@ -145,7 +143,7 @@ void ofApp::draw(){
     industrialRobot->visualizer->draw3d(0, 0, ofGetWidth()/2, ofGetHeight()/2);
     industrialRobot->visualizer->drawside( ofGetWidth()/2, 0, ofGetWidth()/2, ofGetHeight()/2);
     industrialRobot->visualizer->drawtop( ofGetWidth()/2,  ofGetHeight()/2, ofGetWidth()/2, ofGetHeight()/2);
-   // industrialRobot->visualizer->drawArm0()drawGraphs(x+(w/2.0)+2, y+(h/2.0)+2, w/2.0-2, h/2.0-2);
+    // industrialRobot->visualizer->drawArm0()drawGraphs(x+(w/2.0)+2, y+(h/2.0)+2, w/2.0-2, h/2.0-2);
     
     bool * byteone = industrialRobot->thread.serial->sendFlags[0];
     bool * bytetwo = industrialRobot->thread.serial->sendFlags[1];
@@ -180,14 +178,15 @@ void ofApp::draw(){
     ofDrawBitmapString(panicStatus, 10, ofGetHeight()-(10+5*40));
     
     
-   cam.draw(0,0);
+    cam.draw(0,0);
 	if(tracker.getFound() ) {
         
-       // cout<<tracker.getPosition()<<endl;
+        // cout<<tracker.getPosition()<<endl;
 		ofSetLineWidth(1);
 		//tracker.draw();
-        cout << tracker.getPosition().x<<endl;
-      //  tracker.getHaarRectangle().get
+      //  cout <<"tracker X: " << tracker.getPosition().x <<", "<< CAPWIDTH<<endl;
+      //  cout <<"tracker Y: " << tracker.getPosition().y <<", "<< CAPHEIGHT<<endl;
+        //  tracker.getHaarRectangle().get
   		//easyCam.begin();
 		ofSetupScreenOrtho(CAPWIDTH, CAPHEIGHT, OF_ORIENTATION_UNKNOWN, true, -1000, 1000);
 		ofTranslate(CAPWIDTH / 2, CAPHEIGHT / 2);
@@ -197,43 +196,43 @@ void ofApp::draw(){
 		tracker.getObjectMesh().drawWireframe();
 		//easyCam.end();
 	}
-
     
- 
+    
+    
 }
 
 void ofApp::facetracker()
 {
-    cout << noFaceCount << endl;
-    noFaceCount ++;
+    //cout << "noFaceCount: "<< noFaceCount << endl;
+    noFaceCount++;
     
-   
-    //If face is detected, move pos and dir to look at it
+    if(noFaceCount<0)
+        noFaceCount = 0;
+    
+    
+    //1
+    //If face detected: calculate its x, y, z position
     if(tracker.getFound() ) {
+        
         noFaceCount -= 5;
-        if(noFaceCount<0)
-			noFaceCount = 0;
-        ofVec3f curDir =  industrialRobot->getCurrentDir();
-        ofVec3f curPos =  industrialRobot->getCurrentTarget();
-        firsttimefound = true;
+      
         
-        
+        ofVec3f curDir = industrialRobot->getCurrentDir();
+        ofVec3f curPos = industrialRobot->getCurrentTarget();
+        firsttimefound = true; //legacy
         
         // Standard constraints
         float w = FACEWIDTH;
         float h = FACEHEIGHT;
         float factor = CAPWIDTH/FACEWIDTH;
+      //  cout << tracker.getPosition().x << endl; //mads
+        //? z + y pŒ ansigtet (kommer fra tracker
+        float z = curDir.z + ( tracker.getPosition().x-w/2.0)*0.002*factor;
+        float y = curDir.y - ( tracker.getPosition().y-h/2.0)*0.002*factor;
         
-        
-        
-        /// Beregning af direction
-        // z og y akserne er dem som vi gerne vil arbejde med
-        float z = curDir.z + ( tracker.getHaarRectangle().getCenter().x-w/2.0)*0.002*factor;
-        float y = curDir.y - ( tracker.getHaarRectangle().getCenter().y-h/2.0)*0.002*factor;
-        
-        
-        // normalize???
-        ofVec3f targetDir = ofVec3f(0.9, y, z).normalized();
+        // normalize??? Det vi gerne vil kigge pŒ (nyt target)
+        ofVec3f targetDir = ofVec3f(0.9, y, z).normalized(); //Den vigtige en
+        //? Armens nuv¾rende position/orientering
         ofVec3f armDir = curPos.normalized();
         
         // constraints
@@ -241,19 +240,18 @@ void ofApp::facetracker()
 			targetDir.y = 0.7;
 		if(targetDir.y < -0.7)
 			targetDir.y = -0.7;
-        
 		if(targetDir.z > 0.4+armDir.z)
 			targetDir.z = 0.4+armDir.z;
 		if(targetDir.z < -0.4+armDir.z)
 			targetDir.z = -0.4+armDir.z;
         
-        
+        //Tag robottens nuv¾rende position, og ¾ndre x (nyt target)
         float tx =   (maxX-300- industrialRobot->getCurrentTarget().x)*0.1 + industrialRobot->getCurrentTarget().x;
-		
         ofVec3f targetPosition = curPos;
         ofVec3f target = targetPosition;
         target.x = tx;
         
+        //More constraints
         if(target.x > maxX){
 			target.x = maxX;
 		}
@@ -261,25 +259,31 @@ void ofApp::facetracker()
 			target.x = minX;
 		}
         
-        if(noFaceCount < 40){
         
+        //--//--//--//
         // bed robotten om at flytte sig hertil....
-        if(industrialRobot->thread.lock()){
-            if(industrialRobot->thread.coreData.reverseHeadPercent < 0.2 || industrialRobot->thread.coreData.reverseHeadPercent > 0.8){
-                if( !industrialRobot->setGravityTarget(target, targetDir, 0.1, 2, ofxIndustrialRobotDefines::Up,false)){
-                    cout<<"Could not add facetracker scale "<<target.x<<", "<<target.y<<",  "<<target.z<<"  -  "<<targetDir.x<<", "<<targetDir.y<<",  "<<targetDir.z<<endl;
+        if(noFaceCount < 40 )
+        {
+            
+            if(industrialRobot->thread.lock()){
+                if(industrialRobot->thread.coreData.reverseHeadPercent < 0.2 || industrialRobot->thread.coreData.reverseHeadPercent > 0.8){
+                    
+                    if( !industrialRobot->setGravityTarget(target, targetDir, 0.1, 2, ofxIndustrialRobotDefines::Up, false)){
+                        cout<<"Could not add facetracker scale "<<target.x<<", "<<target.y<<",  "<<target.z<<"  -  "<<targetDir.x<<", "<<targetDir.y<<",  "<<targetDir.z<<endl;
+                    }
                 }
+                industrialRobot->thread.unlock();
             }
-            industrialRobot->thread.unlock();
         }
-        }
-        
-        
-        
         
     }
     
-	if(noFaceCount > 40){
+    
+    
+    
+    
+    //2
+    if(noFaceCount > 40){ // start searching
 		if(rate > 60){
 			rate = 30;
 		}
@@ -287,9 +291,7 @@ void ofApp::facetracker()
 		
 		industrialRobot->lockVariant(false);
 		
-		if(noFaceCount > 100){
-			noFaceCount = 100;
-		}
+		
 		if(industrialRobot->isRobotDirReady(0.1)){
 			idleDirection = ofVec3f(2.0,ofRandom(-0.4, -0.05), ofRandom(-1.0, 1.0)).normalized();
 			ofVec3f offsetPos = ofVec3f(ofRandom(-200,200), ofRandom(-200,400), ofRandom(-200,200));
@@ -297,49 +299,55 @@ void ofApp::facetracker()
 				cout<<"Could not add facetracker"<<endl;
 			}
 		}
-		
-	} else {
-	
-		
-		rate += 0.1;
-		//cout << "motion tracker counting";
-		
-		
-		if(rate > 70){
-			rate = 40;
-		}
-		
-		industrialRobot->lockVariant(true);
-		
-		//	cout<<"face1"<<endl;
-		//	if(robot->industrialRobot->thread.lock()){
-		ofVec3f curTarget =  industrialRobot->getCurrentTarget();
-		ofVec3f curDir =  industrialRobot->getCurrentDir();
-		
-		float tz = curTarget.z  - ( curTarget.normalized().z-curDir.z)*90.0;;
-		
-		if(tz > maxZ){
-			tz = maxZ;
-		}
-		if(tz < -maxZ){
-			tz = -maxZ;
-		}
-		
-		float ty = curTarget.y  - ( -0.15-curDir.y)*200.0;;
-		
-		if(ty > maxY){
-			ty = maxY;
-		}
-		if(ty < minY){
-			ty = minY;
-		}
-		
-		ofVec3f target = ofVec3f(industrialRobot->getCurrentGravityTarget().x,ty,tz);
-		if( !industrialRobot->setGravityTarget(target, industrialRobot->getCurrentGravityDir(), 0.1, 1, ofxIndustrialRobotDefines::Up)){
-			cout<<"Could not add facetracker  pos "<<industrialRobot->getCurrentGravityTarget().x<<"   "<<ty<<"   "<<tz<<endl;
-		}
-		//	robot->industrialRobot->thread.unlock();
 	}
+    else
+     
+     {
+        rate += 0.1;
+        //cout << "motion tracker counting";
+        
+        if(rate > 70){
+            rate = 40;
+        }
+        
+        industrialRobot->lockVariant(true);
+        
+        //	cout<<"face1"<<endl;
+        //	if(robot->industrialRobot->thread.lock()){
+        
+        ofVec3f curTarget =  industrialRobot->getCurrentTarget();
+        ofVec3f curDir =  industrialRobot->getCurrentDir();
+        
+        float tz = curTarget.z  - ( curTarget.normalized().z-curDir.z)*90.0;;
+        
+        if(tz > maxZ){
+            tz = maxZ;
+        }
+        if(tz < -maxZ){
+            tz = -maxZ;
+        }
+        
+        float ty = curTarget.y  - ( -0.15-curDir.y)*200.0;;
+        
+        if(ty > maxY){
+            ty = maxY;
+        }
+        if(ty < minY){
+            ty = minY;
+        }
+        
+        ofVec3f target = ofVec3f(industrialRobot->getCurrentGravityTarget().x,ty,tz);
+        
+        if( !industrialRobot->setGravityTarget(target, industrialRobot->getCurrentGravityDir(), 0.1, 1, ofxIndustrialRobotDefines::Up)){
+            cout<<"Could not add facetracker  pos "<<industrialRobot->getCurrentGravityTarget().x<<"   "<<ty<<"   "<<tz<<endl;
+        }
+        //	robot->industrialRobot->thread.unlock();
+    }
+    
+    
+    
+    
+    //}
 }
 
 //--------------------------------------------------------------
@@ -349,6 +357,9 @@ void ofApp::keyPressed(int key){
     }
     if(key == 'u'){
         //        industrialRobot->set
+        if (facetrackerRunning) {
+            facetrackerRunning = false;
+        }
         industrialRobot->thread.serial->setUnlockFlag(!industrialRobot->thread.serial->unlockFlag());
     }
     
