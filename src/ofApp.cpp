@@ -6,7 +6,6 @@ using namespace ofxCv;
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(30);
-    //cam.setDeviceID(0);
     cam.setDeviceID(0);
 	cam.initGrabber(CAPWIDTH, CAPHEIGHT);
 	tracker.setup();
@@ -143,7 +142,7 @@ void ofApp::draw(){
     industrialRobot->visualizer->draw3d(0, 0, ofGetWidth()/2, ofGetHeight()/2);
     industrialRobot->visualizer->drawside( ofGetWidth()/2, 0, ofGetWidth()/2, ofGetHeight()/2);
     industrialRobot->visualizer->drawtop( ofGetWidth()/2,  ofGetHeight()/2, ofGetWidth()/2, ofGetHeight()/2);
-    // industrialRobot->visualizer->drawArm0()drawGraphs(x+(w/2.0)+2, y+(h/2.0)+2, w/2.0-2, h/2.0-2);
+    //industrialRobot->visualizer->drawArm0()drawGraphs(x+(w/2.0)+2, y+(h/2.0)+2, w/2.0-2, h/2.0-2);
     
     bool * byteone = industrialRobot->thread.serial->sendFlags[0];
     bool * bytetwo = industrialRobot->thread.serial->sendFlags[1];
@@ -183,7 +182,7 @@ void ofApp::draw(){
         
         // cout<<tracker.getPosition()<<endl;
 		ofSetLineWidth(1);
-		//tracker.draw();
+		tracker.draw();
       //  cout <<"tracker X: " << tracker.getPosition().x <<", "<< CAPWIDTH<<endl;
       //  cout <<"tracker Y: " << tracker.getPosition().y <<", "<< CAPHEIGHT<<endl;
         //  tracker.getHaarRectangle().get
@@ -210,16 +209,13 @@ void ofApp::facetracker()
         noFaceCount = 0;
     
     
-    //1
-    //If face detected: calculate its x, y, z position
+    //If face detected: calculate the face's x, y, z position
     if(tracker.getFound() ) {
         
         noFaceCount -= 5;
-      
         
         ofVec3f curDir = industrialRobot->getCurrentDir();
         ofVec3f curPos = industrialRobot->getCurrentTarget();
-        firsttimefound = true; //legacy
         
         // Standard constraints
         float w = FACEWIDTH;
@@ -259,15 +255,12 @@ void ofApp::facetracker()
 			target.x = minX;
 		}
         
-        
-        //--//--//--//
-        // bed robotten om at flytte sig hertil....
-        if(noFaceCount < 40 )
+        //---------------------------------------------
+        // Flyt robotten sŒ ansigtet er i midten
+        if(noFaceCount < 40)
         {
-            
             if(industrialRobot->thread.lock()){
                 if(industrialRobot->thread.coreData.reverseHeadPercent < 0.2 || industrialRobot->thread.coreData.reverseHeadPercent > 0.8){
-                    
                     if( !industrialRobot->setGravityTarget(target, targetDir, 0.1, 2, ofxIndustrialRobotDefines::Up, false)){
                         cout<<"Could not add facetracker scale "<<target.x<<", "<<target.y<<",  "<<target.z<<"  -  "<<targetDir.x<<", "<<targetDir.y<<",  "<<targetDir.z<<endl;
                     }
@@ -279,10 +272,7 @@ void ofApp::facetracker()
     }
     
     
-    
-    
-    
-    //2
+    //----------------------------------------------
     if(noFaceCount > 40){ // start searching
 		if(rate > 60){
 			rate = 30;
@@ -299,10 +289,7 @@ void ofApp::facetracker()
 				cout<<"Could not add facetracker"<<endl;
 			}
 		}
-	}
-    else
-     
-     {
+	} else {
         rate += 0.1;
         //cout << "motion tracker counting";
         
@@ -343,12 +330,8 @@ void ofApp::facetracker()
         }
         //	robot->industrialRobot->thread.unlock();
     }
-    
-    
-    
-    
-    //}
 }
+
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
