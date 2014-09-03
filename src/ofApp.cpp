@@ -69,7 +69,7 @@ void ofApp::update(){
 			if(industrialRobot->getSerial()->connected){
 				l = "Motor "+ofToString(i,0)+": ";
 				if(!byteone[7]){
-					l+= "LOCKED ";
+					l+= "L ";
 				}
 				if(bytetwo[i]){
 					if(bytestatus[i]){
@@ -87,6 +87,8 @@ void ofApp::update(){
 			}
 			motorStatusLabel[i] = l;
 		}
+        
+
 		
 		if(!industrialRobot->thread.serial->connected){
 			panicStatus = "Status: Serial not connected";
@@ -139,7 +141,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackground(0, 0, 0);
-    industrialRobot->visualizer->draw3d(0, 0, ofGetWidth()/2, ofGetHeight()/2);
+    //industrialRobot->visualizer->draw3d(0, 0, ofGetWidth()/2, ofGetHeight()/2);
     industrialRobot->visualizer->drawside( ofGetWidth()/2, 0, ofGetWidth()/2, ofGetHeight()/2);
     industrialRobot->visualizer->drawtop( ofGetWidth()/2,  ofGetHeight()/2, ofGetWidth()/2, ofGetHeight()/2);
     //industrialRobot->visualizer->drawArm0()drawGraphs(x+(w/2.0)+2, y+(h/2.0)+2, w/2.0-2, h/2.0-2);
@@ -172,12 +174,43 @@ void ofApp::draw(){
         ofRect(10+i*40, ofGetHeight()-(10+1*40), 30, 30);
     }
     for(int i=0;i<5;i++){
-        ofDrawBitmapString(motorStatusLabel[i], 10+200*i, ofGetHeight()-(10+4*40));
+        ofDrawBitmapString(motorStatusLabel[i], 10, ofGetHeight()/2+20+ i*30);
     }
     ofDrawBitmapString(panicStatus, 10, ofGetHeight()-(10+5*40));
     
+    /// HELP
+    ofDrawBitmapString("Keyboard commands:", 10+300, ofGetHeight()/2+20+ 0*30);
+    ofDrawBitmapString("Unluck: u", 10+300, ofGetHeight()/2+20+ 1*30);
+    ofDrawBitmapString("Recalibrate: a", 10+300, ofGetHeight()/2+20+ 2*30);
+    ofDrawBitmapString("Facetrack: f", 10+300, ofGetHeight()/2+20+ 3*30);
     
-    cam.draw(0,0);
+   
+   
+    
+    ofDrawBitmapString("Guide", 10+300, ofGetHeight()/2+20+ 5*30);
+    if(!byteone[7])
+    {
+        ofDrawBitmapString("I need to be unlocked", 10+300, ofGetHeight()/2+20+ 6*30);
+    }else
+    if(!bytestatus[5])
+    {
+        
+    ofDrawBitmapString("I need to be calibrated", 10+300, ofGetHeight()/2+20+ 6*30);
+    }else
+        if(!facetrackerRunning)
+        {
+            ofDrawBitmapString("I need to facetrack", 10+300, ofGetHeight()/2+20+ 6*30);
+            
+        }
+    else
+    {
+         ofDrawBitmapString("I should be ok", 10+300, ofGetHeight()/2+20+ 6*30);
+    }
+        
+   
+    
+    
+    cam.draw(0,0, ofGetWidth()/2, ofGetHeight()/2);
 	if(tracker.getFound() ) {
         
         // cout<<tracker.getPosition()<<endl;
@@ -187,7 +220,7 @@ void ofApp::draw(){
       //  cout <<"tracker Y: " << tracker.getPosition().y <<", "<< CAPHEIGHT<<endl;
         //  tracker.getHaarRectangle().get
   		//easyCam.begin();
-		ofSetupScreenOrtho(CAPWIDTH, CAPHEIGHT, OF_ORIENTATION_UNKNOWN, true, -1000, 1000);
+		ofSetupScreenOrtho(CAPWIDTH/2, CAPHEIGHT/2, OF_ORIENTATION_UNKNOWN, true, -1000, 1000);
 		ofTranslate(CAPWIDTH / 2, CAPHEIGHT / 2);
 		applyMatrix(rotationMatrix);
 		ofScale(5,5,5);
@@ -221,11 +254,11 @@ void ofApp::facetracker()
         float w = FACEWIDTH;
         float h = FACEHEIGHT;
         float factor = CAPWIDTH/FACEWIDTH;
-      //  cout << tracker.getPosition().x << endl; //mads
+      
         //? z + y pŒ ansigtet (kommer fra tracker
         float z = curDir.z + ( tracker.getPosition().x-w/2.0)*0.002*factor;
         float y = curDir.y - ( tracker.getPosition().y-h/2.0)*0.002*factor;
-        
+          //       cout << tracker.getPosition().length() << endl; //mads
         // normalize??? Det vi gerne vil kigge pŒ (nyt target)
         ofVec3f targetDir = ofVec3f(0.9, y, z).normalized(); //Den vigtige en
         //? Armens nuv¾rende position/orientering
@@ -241,8 +274,12 @@ void ofApp::facetracker()
 		if(targetDir.z < -0.4+armDir.z)
 			targetDir.z = -0.4+armDir.z;
         
+        
+        float face_width = tracker.getImageFeature(ofxFaceTrackerThreaded::FACE_OUTLINE).getBoundingBox().width;
+      
         //Tag robottens nuv¾rende position, og ¾ndre x (nyt target)
-        float tx =   (maxX-300- industrialRobot->getCurrentTarget().x)*0.1 + industrialRobot->getCurrentTarget().x;
+      //  float tx =   (maxX-300- industrialRobot->getCurrentTarget().x)*0.1 + industrialRobot->getCurrentTarget().x;
+        float tx =  industrialRobot->getCurrentTarget().x - (face_width-40)*2.0;
         ofVec3f targetPosition = curPos;
         ofVec3f target = targetPosition;
         target.x = tx;
@@ -335,17 +372,21 @@ void ofApp::facetracker()
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if(key == 'a'){
+    if(key == 'a' && !bytestatus[5]){
+        facetrackerRunning = false;
         industrialRobot->resetRobot();
     }
     if(key == 'u'){
         //        industrialRobot->set
-        if (facetrackerRunning) {
-            facetrackerRunning = false;
-        }
+     
+        facetrackerRunning = false;
+    
         industrialRobot->thread.serial->setUnlockFlag(!industrialRobot->thread.serial->unlockFlag());
     }
     
+    if(key == 'f'){
+        facetrackerRunning = !facetrackerRunning;
+    }
     if(key == '1'){
         byteone[0] = !byteone[0];
     }
@@ -402,9 +443,6 @@ void ofApp::keyPressed(int key){
     
     if(key == 'i'){
         bytetwo[7] = !bytetwo[7];
-    }
-    if(key == 'f'){
-        facetrackerRunning = !facetrackerRunning;
     }
     
 }
