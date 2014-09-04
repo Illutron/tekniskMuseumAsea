@@ -4,9 +4,9 @@
 #include "ofxIndustrialRobot.h"
 #include "ofxFaceTrackerThreaded.h"
 
-#define CAPWIDTH 640
-#define CAPHEIGHT 480
-#define FACEHEIGHT 480
+#define CAPWIDTH 320
+#define CAPHEIGHT 240
+#define FACEHEIGHT 240
 
 #define FACEWIDTH FACEHEIGHT*1.33
 

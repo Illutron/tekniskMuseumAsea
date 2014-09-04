@@ -8,6 +8,8 @@ void ofApp::setup(){
     ofSetFrameRate(30);
     cam.setDeviceID(0);
 	cam.initGrabber(CAPWIDTH, CAPHEIGHT);
+   // cam.videoSettings();
+    
 	tracker.setup();
     
     industrialRobot = new ofxIndustrialRobot(this);
@@ -261,8 +263,16 @@ void ofApp::facetracker()
           //       cout << tracker.getPosition().length() << endl; //mads
         // normalize??? Det vi gerne vil kigge pŒ (nyt target)
         ofVec3f targetDir = ofVec3f(0.9, y, z).normalized(); //Den vigtige en
+
+ //       targetDir.rotate(ofDegToRad(10),ofVec3f(0,1,0));
+        
+        //ofVec3f targetDir = ofVec3f(0.9, y, z).normalized(); //Den vigtige en
+        
+     
         //? Armens nuv¾rende position/orientering
+       
         ofVec3f armDir = curPos.normalized();
+      
         
         // constraints
         if(targetDir.y > 0.7)
@@ -320,7 +330,7 @@ void ofApp::facetracker()
 		
 		
 		if(industrialRobot->isRobotDirReady(0.1)){
-			idleDirection = ofVec3f(2.0,ofRandom(-0.4, -0.05), ofRandom(-1.0, 1.0)).normalized();
+			idleDirection = ofVec3f(2,ofRandom(-0.4, -0.05), ofRandom(-1.0, 1.0)).normalized();
 			ofVec3f offsetPos = ofVec3f(ofRandom(-200,200), ofRandom(-200,400), ofRandom(-200,200));
 			if( !industrialRobot->setGravityTarget(idlePosition+offsetPos, idleDirection, 0.05, 0.4, ofxIndustrialRobotDefines::Up)){
 				cout<<"Could not add facetracker"<<endl;
