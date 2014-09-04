@@ -8,17 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		02C5F4A2A42921F798F0DA33 /* ofxIndustrialRobot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5037157F74C9889B2D4BDD14 /* ofxIndustrialRobot.cpp */; };
-		04279062196D8CF6000B241D /* Expression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0427903F196D8CF6000B241D /* Expression.cpp */; };
-		04279063196D8CF6000B241D /* ExpressionClassifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04279041196D8CF6000B241D /* ExpressionClassifier.cpp */; };
-		04279064196D8CF6000B241D /* ofxFaceTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04279043196D8CF6000B241D /* ofxFaceTracker.cpp */; };
-		04279065196D8CF6000B241D /* CLM.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0427905A196D8CF6000B241D /* CLM.cc */; };
-		04279066196D8CF6000B241D /* FCheck.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0427905B196D8CF6000B241D /* FCheck.cc */; };
-		04279067196D8CF6000B241D /* FDet.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0427905C196D8CF6000B241D /* FDet.cc */; };
-		04279068196D8CF6000B241D /* IO.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0427905D196D8CF6000B241D /* IO.cc */; };
-		04279069196D8CF6000B241D /* Patch.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0427905E196D8CF6000B241D /* Patch.cc */; };
-		0427906A196D8CF6000B241D /* PAW.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0427905F196D8CF6000B241D /* PAW.cc */; };
-		0427906B196D8CF6000B241D /* PDM.cc in Sources */ = {isa = PBXBuildFile; fileRef = 04279060196D8CF6000B241D /* PDM.cc */; };
-		0427906C196D8CF6000B241D /* Tracker.cc in Sources */ = {isa = PBXBuildFile; fileRef = 04279061196D8CF6000B241D /* Tracker.cc */; };
 		04279095196D8E45000B241D /* ETF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0427907A196D8E45000B241D /* ETF.cpp */; };
 		04279096196D8E45000B241D /* fdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0427907B196D8E45000B241D /* fdog.cpp */; };
 		04279097196D8E45000B241D /* Calibration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0427908A196D8E45000B241D /* Calibration.cpp */; };
@@ -106,34 +95,6 @@
 
 /* Begin PBXFileReference section */
 		01DCC0911400F9ACF5B65578 /* ofxXmlSettings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
-		0427903F196D8CF6000B241D /* Expression.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Expression.cpp; sourceTree = "<group>"; };
-		04279040196D8CF6000B241D /* Expression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Expression.h; sourceTree = "<group>"; };
-		04279041196D8CF6000B241D /* ExpressionClassifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExpressionClassifier.cpp; sourceTree = "<group>"; };
-		04279042196D8CF6000B241D /* ExpressionClassifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExpressionClassifier.h; sourceTree = "<group>"; };
-		04279043196D8CF6000B241D /* ofxFaceTracker.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxFaceTracker.cpp; sourceTree = "<group>"; };
-		04279044196D8CF6000B241D /* ofxFaceTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFaceTracker.h; sourceTree = "<group>"; };
-		04279045196D8CF6000B241D /* ofxFaceTrackerThreaded.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFaceTrackerThreaded.h; sourceTree = "<group>"; };
-		0427904A196D8CF6000B241D /* CLM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CLM.h; sourceTree = "<group>"; };
-		0427904B196D8CF6000B241D /* FCheck.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FCheck.h; sourceTree = "<group>"; };
-		0427904C196D8CF6000B241D /* FDet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FDet.h; sourceTree = "<group>"; };
-		0427904D196D8CF6000B241D /* IO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IO.h; sourceTree = "<group>"; };
-		0427904E196D8CF6000B241D /* Patch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Patch.h; sourceTree = "<group>"; };
-		0427904F196D8CF6000B241D /* PAW.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PAW.h; sourceTree = "<group>"; };
-		04279050196D8CF6000B241D /* PDM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDM.h; sourceTree = "<group>"; };
-		04279051196D8CF6000B241D /* Tracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tracker.h; sourceTree = "<group>"; };
-		04279052196D8CF6000B241D /* license.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = license.md; sourceTree = "<group>"; };
-		04279054196D8CF6000B241D /* face.con */ = {isa = PBXFileReference; lastKnownFileType = text; path = face.con; sourceTree = "<group>"; };
-		04279055196D8CF6000B241D /* face.tracker */ = {isa = PBXFileReference; lastKnownFileType = text; path = face.tracker; sourceTree = "<group>"; };
-		04279056196D8CF6000B241D /* face.tri */ = {isa = PBXFileReference; lastKnownFileType = text; path = face.tri; sourceTree = "<group>"; };
-		04279057196D8CF6000B241D /* face2.tracker */ = {isa = PBXFileReference; lastKnownFileType = text; path = face2.tracker; sourceTree = "<group>"; };
-		0427905A196D8CF6000B241D /* CLM.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CLM.cc; sourceTree = "<group>"; };
-		0427905B196D8CF6000B241D /* FCheck.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FCheck.cc; sourceTree = "<group>"; };
-		0427905C196D8CF6000B241D /* FDet.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FDet.cc; sourceTree = "<group>"; };
-		0427905D196D8CF6000B241D /* IO.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IO.cc; sourceTree = "<group>"; };
-		0427905E196D8CF6000B241D /* Patch.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Patch.cc; sourceTree = "<group>"; };
-		0427905F196D8CF6000B241D /* PAW.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PAW.cc; sourceTree = "<group>"; };
-		04279060196D8CF6000B241D /* PDM.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PDM.cc; sourceTree = "<group>"; };
-		04279061196D8CF6000B241D /* Tracker.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Tracker.cc; sourceTree = "<group>"; };
 		0427906F196D8E45000B241D /* ofxCv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxCv.h; sourceTree = "<group>"; };
 		04279071196D8E45000B241D /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		04279075196D8E45000B241D /* ETF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETF.h; sourceTree = "<group>"; };
@@ -272,107 +233,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0427903D196D8CF6000B241D /* ofxFaceTracker */ = {
-			isa = PBXGroup;
-			children = (
-				0427903E196D8CF6000B241D /* src */,
-				04279046196D8CF6000B241D /* libs */,
-			);
-			name = ofxFaceTracker;
-			sourceTree = "<group>";
-		};
-		0427903E196D8CF6000B241D /* src */ = {
-			isa = PBXGroup;
-			children = (
-				0427903F196D8CF6000B241D /* Expression.cpp */,
-				04279040196D8CF6000B241D /* Expression.h */,
-				04279041196D8CF6000B241D /* ExpressionClassifier.cpp */,
-				04279042196D8CF6000B241D /* ExpressionClassifier.h */,
-				04279043196D8CF6000B241D /* ofxFaceTracker.cpp */,
-				04279044196D8CF6000B241D /* ofxFaceTracker.h */,
-				04279045196D8CF6000B241D /* ofxFaceTrackerThreaded.h */,
-			);
-			name = src;
-			path = ../../../addons/ofxFaceTracker/src;
-			sourceTree = "<group>";
-		};
-		04279046196D8CF6000B241D /* libs */ = {
-			isa = PBXGroup;
-			children = (
-				04279047196D8CF6000B241D /* FaceTracker */,
-			);
-			name = libs;
-			path = ../../../addons/ofxFaceTracker/libs;
-			sourceTree = "<group>";
-		};
-		04279047196D8CF6000B241D /* FaceTracker */ = {
-			isa = PBXGroup;
-			children = (
-				04279048196D8CF6000B241D /* include */,
-				04279052196D8CF6000B241D /* license.md */,
-				04279053196D8CF6000B241D /* model */,
-				04279058196D8CF6000B241D /* src */,
-			);
-			path = FaceTracker;
-			sourceTree = "<group>";
-		};
-		04279048196D8CF6000B241D /* include */ = {
-			isa = PBXGroup;
-			children = (
-				04279049196D8CF6000B241D /* FaceTracker */,
-			);
-			path = include;
-			sourceTree = "<group>";
-		};
-		04279049196D8CF6000B241D /* FaceTracker */ = {
-			isa = PBXGroup;
-			children = (
-				0427904A196D8CF6000B241D /* CLM.h */,
-				0427904B196D8CF6000B241D /* FCheck.h */,
-				0427904C196D8CF6000B241D /* FDet.h */,
-				0427904D196D8CF6000B241D /* IO.h */,
-				0427904E196D8CF6000B241D /* Patch.h */,
-				0427904F196D8CF6000B241D /* PAW.h */,
-				04279050196D8CF6000B241D /* PDM.h */,
-				04279051196D8CF6000B241D /* Tracker.h */,
-			);
-			path = FaceTracker;
-			sourceTree = "<group>";
-		};
-		04279053196D8CF6000B241D /* model */ = {
-			isa = PBXGroup;
-			children = (
-				04279054196D8CF6000B241D /* face.con */,
-				04279055196D8CF6000B241D /* face.tracker */,
-				04279056196D8CF6000B241D /* face.tri */,
-				04279057196D8CF6000B241D /* face2.tracker */,
-			);
-			path = model;
-			sourceTree = "<group>";
-		};
-		04279058196D8CF6000B241D /* src */ = {
-			isa = PBXGroup;
-			children = (
-				04279059196D8CF6000B241D /* lib */,
-			);
-			path = src;
-			sourceTree = "<group>";
-		};
-		04279059196D8CF6000B241D /* lib */ = {
-			isa = PBXGroup;
-			children = (
-				0427905A196D8CF6000B241D /* CLM.cc */,
-				0427905B196D8CF6000B241D /* FCheck.cc */,
-				0427905C196D8CF6000B241D /* FDet.cc */,
-				0427905D196D8CF6000B241D /* IO.cc */,
-				0427905E196D8CF6000B241D /* Patch.cc */,
-				0427905F196D8CF6000B241D /* PAW.cc */,
-				04279060196D8CF6000B241D /* PDM.cc */,
-				04279061196D8CF6000B241D /* Tracker.cc */,
-			);
-			path = lib;
-			sourceTree = "<group>";
-		};
 		0427906D196D8E45000B241D /* ofxCv */ = {
 			isa = PBXGroup;
 			children = (
@@ -658,7 +518,6 @@
 				042790B1196D8F2E000B241D /* ofxMSACore */,
 				042790A3196D8F17000B241D /* ofx3DModelLoader */,
 				0427906D196D8E45000B241D /* ofxCv */,
-				0427903D196D8CF6000B241D /* ofxFaceTracker */,
 				1F4FB5C423662B96ADFDCC0B /* ofxXmlSettings */,
 				E3AA8B2055EBA7D747EC9011 /* ofxAseaRobot */,
 			);
@@ -841,7 +700,6 @@
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				0427909A196D8E45000B241D /* Flow.cpp in Sources */,
 				0427909B196D8E45000B241D /* Helpers.cpp in Sources */,
-				04279066196D8CF6000B241D /* FCheck.cc in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				0427909C196D8E45000B241D /* ObjectFinder.cpp in Sources */,
 				04279096196D8E45000B241D /* fdog.cpp in Sources */,
@@ -850,22 +708,16 @@
 				933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */,
 				042790AE196D8F17000B241D /* model3DS.cpp in Sources */,
 				042790BA196D8F2E000B241D /* MSACoreGL.cpp in Sources */,
-				04279063196D8CF6000B241D /* ExpressionClassifier.cpp in Sources */,
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
 				0427909E196D8E45000B241D /* Tracker.cpp in Sources */,
 				02C5F4A2A42921F798F0DA33 /* ofxIndustrialRobot.cpp in Sources */,
-				04279065196D8CF6000B241D /* CLM.cc in Sources */,
-				04279069196D8CF6000B241D /* Patch.cc in Sources */,
 				F0370F64147190A83DA04DB2 /* ofxIndustrialRobotArmData.cpp in Sources */,
 				C27B4011A130459B72373335 /* ofxIndustrialRobotArmHelper.cpp in Sources */,
 				04279099196D8E45000B241D /* Distance.cpp in Sources */,
-				0427906C196D8CF6000B241D /* Tracker.cc in Sources */,
-				04279068196D8CF6000B241D /* IO.cc in Sources */,
 				BD0FFA6DA66F824C9B18575F /* ofxIndustrialRobotController.cpp in Sources */,
 				628C142DAE2748672C441065 /* ofxIndustrialRobotCoreData.cpp in Sources */,
 				329FE5B819AAEDD93CF914FF /* ofxIndustrialRobotMotorConverter.cpp in Sources */,
-				0427906B196D8CF6000B241D /* PDM.cc in Sources */,
 				999343E7E6DD0E9CDAE5C183 /* ofxIndustrialRobotPlotter.cpp in Sources */,
 				3B8811A28ADA66B7EB0A253A /* ofxIndustrialRobotPositionCue.cpp in Sources */,
 				042790A0196D8E45000B241D /* Wrappers.cpp in Sources */,
@@ -874,17 +726,13 @@
 				894D0695842FC155D4ADFCA1 /* ofxIndustrialRobotSerial.cpp in Sources */,
 				208E14A9204F8A7BF710F220 /* ofxIndustrialRobotThread.cpp in Sources */,
 				0427909D196D8E45000B241D /* RunningBackground.cpp in Sources */,
-				04279062196D8CF6000B241D /* Expression.cpp in Sources */,
 				04279095196D8E45000B241D /* ETF.cpp in Sources */,
 				042790AF196D8F17000B241D /* texture3DS.cpp in Sources */,
 				514C77B84E03478D3AF6BF61 /* ofxIndustrialRobotTimeline.cpp in Sources */,
-				04279067196D8CF6000B241D /* FDet.cc in Sources */,
 				AC26FE82422E2B7B94AF863E /* ofxIndustrialRobotTool.cpp in Sources */,
 				04279098196D8E45000B241D /* ContourFinder.cpp in Sources */,
 				042790BF196D8F3D000B241D /* ofxMSAInteractiveObject.cpp in Sources */,
 				4DB16A5E013B8EDCF09DBFB0 /* ofxIndustrialRobotVisualizer.cpp in Sources */,
-				0427906A196D8CF6000B241D /* PAW.cc in Sources */,
-				04279064196D8CF6000B241D /* ofxFaceTracker.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,10 @@ void ofApp::setup(){
 	cam.initGrabber(CAPWIDTH, CAPHEIGHT);
    // cam.videoSettings();
     
-	tracker.setup();
+    finder.setup("haarcascade_frontalface_alt2.xml");
+	finder.setPreset(ObjectFinder::Fast);
+	finder.getTracker().setSmoothingRate(.3);
+	sunglasses.loadImage("sunglasses.png");
     
     industrialRobot = new ofxIndustrialRobot(this);
     industrialRobot->setInput(ofxIndustrialRobot::Gravity);
@@ -24,11 +27,7 @@ void ofApp::update(){
     cam.update();
     
     if(cam.isFrameNew()) {
-		tracker.update(toCv(cam));
-		position = tracker.getPosition();
-		scale = tracker.getScale();
-		orientation = tracker.getOrientation();
-		rotationMatrix = tracker.getRotationMatrix();
+		finder.update(cam);
 	}
     
     
@@ -211,27 +210,29 @@ void ofApp::draw(){
         
    
     
-    
-    cam.draw(0,0, ofGetWidth()/2, ofGetHeight()/2);
-	if(tracker.getFound() ) {
+    ofPushMatrix();{
+        ofScale((ofGetWidth()/2)/cam.getWidth(), (ofGetHeight()/2)/cam.getHeight());
+        cam.draw(0,0);
         
-        // cout<<tracker.getPosition()<<endl;
-		ofSetLineWidth(1);
-		tracker.draw();
-      //  cout <<"tracker X: " << tracker.getPosition().x <<", "<< CAPWIDTH<<endl;
-      //  cout <<"tracker Y: " << tracker.getPosition().y <<", "<< CAPHEIGHT<<endl;
-        //  tracker.getHaarRectangle().get
-  		//easyCam.begin();
-		ofSetupScreenOrtho(CAPWIDTH/2, CAPHEIGHT/2, OF_ORIENTATION_UNKNOWN, true, -1000, 1000);
-		ofTranslate(CAPWIDTH / 2, CAPHEIGHT / 2);
-		applyMatrix(rotationMatrix);
-		ofScale(5,5,5);
-		ofDrawAxis(scale);
-		tracker.getObjectMesh().drawWireframe();
-		//easyCam.end();
-	}
-    
-    
+        //Draw tracker debug
+        for(int i = 0; i < finder.size(); i++) {
+            ofRectangle object = finder.getObjectSmoothed(i);
+            sunglasses.setAnchorPercent(.5, .5);
+            float scaleAmount = .85 * object.width / sunglasses.getWidth();
+            ofPushMatrix();
+            ofTranslate(object.x + object.width / 2., object.y + object.height * .42);
+            ofScale(scaleAmount, scaleAmount);
+            sunglasses.draw(0, 0);
+            ofPopMatrix();
+            ofPushMatrix();
+            ofTranslate(object.getPosition());
+            ofDrawBitmapStringHighlight(ofToString(finder.getLabel(i)), 0, 0);
+            ofLine(ofVec2f(), toOf(finder.getVelocity(i)) * 10);
+            ofPopMatrix();
+        }
+        
+        
+    }ofPopMatrix();
     
 }
 
@@ -245,7 +246,7 @@ void ofApp::facetracker()
     
     
     //If face detected: calculate the face's x, y, z position
-    if(tracker.getFound() ) {
+    if(finder.size()>0 ) {
         
         noFaceCount -= 5;
         
@@ -257,9 +258,11 @@ void ofApp::facetracker()
         float h = FACEHEIGHT;
         float factor = CAPWIDTH/FACEWIDTH;
       
+        ofRectangle trackerRect = finder.getObjectSmoothed(0);
+        
         //? z + y på ansigtet (kommer fra tracker
-        float z = curDir.z + ( tracker.getPosition().x-w/2.0)*0.002*factor;
-        float y = curDir.y - ( tracker.getPosition().y-h/2.0)*0.002*factor;
+        float z = curDir.z + ( trackerRect.getCenter().x-w/2.0)*0.002*factor;
+        float y = curDir.y - ( trackerRect.getCenter().y-h/2.0)*0.002*factor;
           //       cout << tracker.getPosition().length() << endl; //mads
         // normalize??? Det vi gerne vil kigge på (nyt target)
         ofVec3f targetDir = ofVec3f(0.9, y, z).normalized(); //Den vigtige en
@@ -285,7 +288,7 @@ void ofApp::facetracker()
 			targetDir.z = -0.4+armDir.z;
         
         
-        float face_width = tracker.getImageFeature(ofxFaceTrackerThreaded::FACE_OUTLINE).getBoundingBox().width;
+        float face_width = trackerRect.getWidth();
       
         //Tag robottens nuværende position, og ændre x (nyt target)
       //  float tx =   (maxX-300- industrialRobot->getCurrentTarget().x)*0.1 + industrialRobot->getCurrentTarget().x;

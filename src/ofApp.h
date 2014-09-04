@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxIndustrialRobot.h"
-#include "ofxFaceTrackerThreaded.h"
+#include "ofxCv.h"
 
 #define CAPWIDTH 320
 #define CAPHEIGHT 240
@@ -54,16 +54,12 @@ public:
     // face tracking
     
 	ofVideoGrabber cam;
-	ofxFaceTrackerThreaded tracker;
-    
-    ofVec2f position;
-	float scale;
-	ofVec3f orientation;
-	ofMatrix4x4 rotationMatrix;
 	
+    
 	cv::Mat translation, rotation;
 	ofMatrix4x4 pose;
     
-    
+    ofxCv::ObjectFinder finder;
+    ofImage sunglasses;
 };
 
