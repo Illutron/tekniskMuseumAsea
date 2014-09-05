@@ -13,7 +13,19 @@ void ofApp::setup(){
     finder.setup("haarcascade_frontalface_alt2.xml");
 	finder.setPreset(ObjectFinder::Fast);
 	finder.getTracker().setSmoothingRate(.3);
-	sunglasses.loadImage("sunglasses.png");
+    
+
+   // finder.setMinNeighbors(0);
+    //  objectFinder.setMultiScaleFactor(0.5f);
+    finder.setCannyPruning(true);
+    finder.setFindBiggestObject(true);
+    cropped.allocate(CAPWIDTH, CAPHEIGHT, OF_IMAGE_COLOR);
+    
+    roi.x = 0;
+    roi.y =0;
+    roi.width = cam.width;
+    roi.height = cam.height;
+    
     
     industrialRobot = new ofxIndustrialRobot(this);
     industrialRobot->setInput(ofxIndustrialRobot::Gravity);
@@ -27,8 +39,60 @@ void ofApp::update(){
     cam.update();
     
     if(cam.isFrameNew()) {
-		finder.update(cam);
+        Mat camMat = toCv(cam);
+        Mat croppedCamMat(camMat, roi);
+        resize(croppedCamMat, cropped);
+        cropped.update();
+
+		finder.update(cropped);
+        if(finder.size() > 0) {
+            
+            cv::Rect roiTmp = toCv(finder.getObject(0));
+            roi.x = (roi.x * 0.9f + (roi.x+roiTmp.x-roiTmp.width/2.0f)*0.1f);
+            roi.y = (roi.y * 0.9f + (roi.y+roiTmp.y-roiTmp.height/2.0f)*0.1f);
+            roi.width = (roi.width * 0.9 + roiTmp.width/2*0.1f);
+            roi.height = (roi.height * 0.9 + roiTmp.height/2*0.1f);
+            
+            
+            /* roi.y = ofClamp(roi.y - roi.height/2,0,cam.height);
+             roi.width = roi.width * scaling;
+             roi.height = roi.height * scaling;
+             
+             Mat camMat = toCv(cam);
+             Mat croppedCamMat(camMat, roi);
+             resize(croppedCamMat, cropped);*/
+            tracked = true;
+            trackerTimer = ofGetElapsedTimeMillis();
+			
+		}
+        else
+        {
+            if(ofGetElapsedTimeMillis()-trackerTimer > 2000)
+            {
+                roi.x = roi.x * 0.99 + cam.width/6*2 * 0.01f;;
+                roi.y = roi.y * 0.99 + cam.height/6*2 * 0.01f;;
+                roi.width = roi.width * 0.95 + cam.width/3*0.05;
+                roi.height = roi.height * 0.95 + cam.height/3* 0.05;
+            }
+            else if(tracked)
+            {
+                roi.x = roi.x * 0.9 ;
+                roi.y = roi.y * 0.9 ;
+                roi.width = roi.width * 0.9 + cam.width*0.1;
+                roi.height = roi.height * 0.9 + cam.height* 0.1;
+                tracked = false;
+                
+            }
+            
+        }
+        roi.x = ofClamp(roi.x,0,cam.width);
+        roi.y = ofClamp(roi.y,0,cam.height);
+        roi.width = ofClamp(roi.width,0,cam.width-roi.x);
+        roi.height = ofClamp(roi.height,0,cam.height-roi.y);
 	}
+    x = roi.x + roi.width/2;
+    y = roi.y + roi.height/2;
+    width = roi.width;
     
     
     //  industrialRobot->setGravityTarget(ofVec3f(1487.6, 666.2, 1038.6), ofVec3f(0.77, -0.44, 0.62));
@@ -210,29 +274,11 @@ void ofApp::draw(){
         
    
     
-    ofPushMatrix();{
-        ofScale((ofGetWidth()/2)/cam.getWidth(), (ofGetHeight()/2)/cam.getHeight());
-        cam.draw(0,0);
-        
-        //Draw tracker debug
-        for(int i = 0; i < finder.size(); i++) {
-            ofRectangle object = finder.getObjectSmoothed(i);
-            sunglasses.setAnchorPercent(.5, .5);
-            float scaleAmount = .85 * object.width / sunglasses.getWidth();
-            ofPushMatrix();
-            ofTranslate(object.x + object.width / 2., object.y + object.height * .42);
-            ofScale(scaleAmount, scaleAmount);
-            sunglasses.draw(0, 0);
-            ofPopMatrix();
-            ofPushMatrix();
-            ofTranslate(object.getPosition());
-            ofDrawBitmapStringHighlight(ofToString(finder.getLabel(i)), 0, 0);
-            ofLine(ofVec2f(), toOf(finder.getVelocity(i)) * 10);
-            ofPopMatrix();
-        }
-        
-        
-    }ofPopMatrix();
+    cropped.draw(roi.x,roi.y,roi.width,roi.height);
+    if(tracked)
+    {
+    ofEllipse(x,y,width,width);
+    }
     
 }
 
@@ -246,7 +292,7 @@ void ofApp::facetracker()
     
     
     //If face detected: calculate the face's x, y, z position
-    if(finder.size()>0 ) {
+    if(tracked>0 ) {
         
         noFaceCount -= 5;
         
@@ -258,11 +304,11 @@ void ofApp::facetracker()
         float h = FACEHEIGHT;
         float factor = CAPWIDTH/FACEWIDTH;
       
-        ofRectangle trackerRect = finder.getObjectSmoothed(0);
+       // ofRectangle trackerRect = finder.getObjectSmoothed(0);
         
         //? z + y på ansigtet (kommer fra tracker
-        float z = curDir.z + ( trackerRect.getCenter().x-w/2.0)*0.002*factor;
-        float y = curDir.y - ( trackerRect.getCenter().y-h/2.0)*0.002*factor;
+        float z = curDir.z + ( x-w/2.0)*0.002*factor;
+        float y = curDir.y - ( y-h/2.0)*0.002*factor;
           //       cout << tracker.getPosition().length() << endl; //mads
         // normalize??? Det vi gerne vil kigge på (nyt target)
         ofVec3f targetDir = ofVec3f(0.9, y, z).normalized(); //Den vigtige en
@@ -288,7 +334,7 @@ void ofApp::facetracker()
 			targetDir.z = -0.4+armDir.z;
         
         
-        float face_width = trackerRect.getWidth();
+        float face_width = width;
       
         //Tag robottens nuværende position, og ændre x (nyt target)
       //  float tx =   (maxX-300- industrialRobot->getCurrentTarget().x)*0.1 + industrialRobot->getCurrentTarget().x;

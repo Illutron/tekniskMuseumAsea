@@ -4,9 +4,9 @@
 #include "ofxIndustrialRobot.h"
 #include "ofxCv.h"
 
-#define CAPWIDTH 320
-#define CAPHEIGHT 240
-#define FACEHEIGHT 240
+#define CAPWIDTH 640
+#define CAPHEIGHT 480
+#define FACEHEIGHT 480
 
 #define FACEWIDTH FACEHEIGHT*1.33
 
@@ -60,6 +60,16 @@ public:
 	ofMatrix4x4 pose;
     
     ofxCv::ObjectFinder finder;
-    ofImage sunglasses;
+  
+
+    unsigned long trackerTimer = 0;
+    cv::Rect roi;
+    bool tracked = false;
+    	ofImage cropped;
+    
+    float x = 0;
+    float y = 0;
+    float width = 0;
+   
 };
 
